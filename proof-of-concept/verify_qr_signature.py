@@ -10,19 +10,29 @@ def canonical_json_bytes(obj):
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
-def verify_fayda_qr_token(token_payload_str, public_key_pem):
+def verify_fayda_qr_token(token_payload_str, public_key_pem, now_ts=None):
     """
     Verifies an offline Fayda/MOSIP time-signed QR token using a pre-loaded local Public Key.
     No network connection required.
 
-    The important detail is that the signature is computed over the original unsigned payload object,
-    excluding only the signature field. Re-serializing with a consistent canonical encoding preserves
-    the exact signing semantics and avoids fragile representation drift.
+    This is a conceptual JSON-based analogue of a MOSIP Claim 169-style signed payload. Production
+    implementations should use the canonical CBOR/COSE wire format, not a JSON re-serialization.
     """
     try:
         data = json.loads(token_payload_str)
         if "signature" not in data:
             raise ValueError("Token is missing a signature field.")
+
+        if "exp" not in data:
+            raise ValueError("Token is missing an expiration field.")
+
+        if now_ts is None:
+            import time
+            now_ts = int(time.time())
+
+        if now_ts > int(data["exp"]):
+            print("ERROR: Token has expired.")
+            return False
 
         signature = base64.b64decode(data["signature"])
 

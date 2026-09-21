@@ -43,5 +43,5 @@ Transparently documenting what this specification *does not* solve is critical f
 
 ## 4. Specification Standards Alignment
 This architecture directly bridges two established global standards:
-* **Identity Layer:** Implements **MOSIP Claim 169** (IANA-registered CBOR Web Token / CWT format for offline QR credentials containing demographic data and digital signatures).
+* **Identity Layer:** The repository's proof-of-concept intentionally implements a **JSON-based conceptual analogue** of the MOSIP Claim 169 model for public portfolio clarity and educational demonstration. Production-grade implementations should use the canonical **CBOR / COSE-based MOSIP Claim 169 / CWT wire format** as defined by the governing national identity specification, not a JSON re-serialization.
 * **Health Interoperability Layer:** Implements **HL7 FHIR Release 4 (R4)** for structured clinical data representation, ensuring seamless translation from national identity tokens into universal medical records.
