@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor HCW as Health Care Worker
+    participant Tablet as Edge Tablet (Offline)
+    participant QR as Patient QR Code
+    participant LocalDB as Encrypted SQLite / FHIR Store
+
+    HCW->>QR: Scan digital/printed QR code
+    QR->>Tablet: Pass time-signed identity payload
+    Tablet->>Tablet: Load cached Public Key (Fayda PKI)
+    Tablet->>Tablet: Verify Cryptographic Signature (0 bytes net)
+    alt Signature Valid
+        Tablet->>LocalDB: Map UIN & Demographics to HL7 FHIR Patient
+        LocalDB-->>Tablet: Confirm Local Patient Record Created
+        Tablet-->>HCW: Display "Identity Verified & Ready for Care"
+    else Signature Invalid
+        Tablet-->>HCW: Display "Verification Failed: Tampered Token"
+    end
