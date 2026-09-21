@@ -108,31 +108,42 @@ class EdgeSyncWorker {
                 // conflicting resource. This mock keeps the simplified batch-level behavior for readability.
                 console.warn('Conflict detected. Marking affected records for manual review.');
                 for (const item of pendingQueue) {
-                    await this.queueStore.markRetry(item.id, item.retry_count + 1, Date.now() + this.calculateBackoffDelay(item.retry_count || 0));
+                    const retryDelay = this.calculateBackoffDelay(item.retry_count || 0);
+                    await this.queueStore.markRetry(item.id, (item.retry_count || 0) + 1, Date.now() + retryDelay);
                 }
                 this.retryInFlight = false;
+                this.scheduleNextAttempt();
                 return;
             }
 
             if (statusCode >= 500 || statusCode === 0) {
                 const retryDelay = this.calculateBackoffDelay(pendingQueue[0].retry_count || 0);
                 console.warn(`Sync batch failed with status ${statusCode}. Retrying in ${retryDelay}ms.`);
-                await this.sleep(retryDelay);
                 for (const item of pendingQueue) {
                     await this.queueStore.markRetry(item.id, (item.retry_count || 0) + 1, Date.now() + retryDelay);
                 }
+                this.retryInFlight = false;
+                this.scheduleNextAttempt(retryDelay);
+                return;
             }
         } catch (err) {
             const retryDelay = this.calculateBackoffDelay(pendingQueue[0].retry_count || 0);
             console.error('Network error during sync. Backing off.', err);
-            await this.sleep(retryDelay);
             for (const item of pendingQueue) {
                 await this.queueStore.markRetry(item.id, (item.retry_count || 0) + 1, Date.now() + retryDelay);
             }
-        } finally {
             this.retryInFlight = false;
-            this.syncQueueToServer();
+            this.scheduleNextAttempt(retryDelay);
+            return;
         }
+    }
+
+    scheduleNextAttempt(delayMs = this.baseDelayMs) {
+        setTimeout(() => {
+            if (typeof navigator === 'undefined' || navigator.onLine) {
+                this.syncQueueToServer();
+            }
+        }, delayMs);
     }
 
     calculateBackoffDelay(retryCount) {
