@@ -5,10 +5,10 @@ class EncryptedEdgeQueue {
         this.queue = [];
     }
 
-    async loadPending(limit = 50) {
+    async loadPending(limit = 50, nowTs = Date.now()) {
         // In production, read from encrypted SQLite/SQLCipher storage.
         return this.queue
-            .filter(item => item.status === 'PENDING')
+            .filter(item => item.status === 'PENDING' && (!item.retry_at || item.retry_at <= nowTs))
             .slice(0, limit);
     }
 
@@ -18,9 +18,16 @@ class EncryptedEdgeQueue {
         );
     }
 
-    async markRetry(id, retryCount) {
+    async markRetry(id, retryCount, retryAt = null) {
         this.queue = this.queue.map(item =>
-            item.id === id ? { ...item, retry_count: retryCount, status: 'FAILED' } : item
+            item.id === id
+                ? {
+                    ...item,
+                    retry_count: retryCount,
+                    status: 'PENDING',
+                    retry_at: retryAt || Date.now()
+                }
+                : item
         );
     }
 
@@ -97,9 +104,11 @@ class EdgeSyncWorker {
             }
 
             if (statusCode === 409) {
+                // In a real FHIR transaction Bundle, per-entry outcomes would normally identify the exact
+                // conflicting resource. This mock keeps the simplified batch-level behavior for readability.
                 console.warn('Conflict detected. Marking affected records for manual review.');
                 for (const item of pendingQueue) {
-                    await this.queueStore.markRetry(item.id, item.retry_count + 1);
+                    await this.queueStore.markRetry(item.id, item.retry_count + 1, Date.now() + this.calculateBackoffDelay(item.retry_count || 0));
                 }
                 this.retryInFlight = false;
                 return;
@@ -110,7 +119,7 @@ class EdgeSyncWorker {
                 console.warn(`Sync batch failed with status ${statusCode}. Retrying in ${retryDelay}ms.`);
                 await this.sleep(retryDelay);
                 for (const item of pendingQueue) {
-                    await this.queueStore.markRetry(item.id, (item.retry_count || 0) + 1);
+                    await this.queueStore.markRetry(item.id, (item.retry_count || 0) + 1, Date.now() + retryDelay);
                 }
             }
         } catch (err) {
@@ -118,7 +127,7 @@ class EdgeSyncWorker {
             console.error('Network error during sync. Backing off.', err);
             await this.sleep(retryDelay);
             for (const item of pendingQueue) {
-                await this.queueStore.markRetry(item.id, (item.retry_count || 0) + 1);
+                await this.queueStore.markRetry(item.id, (item.retry_count || 0) + 1, Date.now() + retryDelay);
             }
         } finally {
             this.retryInFlight = false;
