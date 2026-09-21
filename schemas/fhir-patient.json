@@ -1,10 +1,21 @@
 {
   "resourceType": "Patient",
-  "id": "fayda-mapped-patient-001",
+  "id": "edge-patient-uuid-8b41-4c92",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/Patient"
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "en",
+        "display": "English"
+      }
+    ]
+  },
   "identifier": [
     {
-      "system": "urn:oid:1.3.6.1.4.1.59784.fayda.uin",
-      "value": "UIN-9876-5432-1098",
+      "use": "official",
       "type": {
         "coding": [
           {
@@ -13,7 +24,9 @@
             "display": "National Identifier"
           }
         ]
-      }
+      },
+      "system": "urn:oid:1.3.6.1.4.1.59784.fayda.uin",
+      "value": "UIN-9876-5432-1098"
     }
   ],
   "active": true,
@@ -21,7 +34,16 @@
     {
       "use": "official",
       "family": "Kebede",
-      "given": ["Abebe"]
+      "given": [
+        "Abebe"
+      ]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "+251911234567",
+      "use": "mobile"
     }
   ],
   "gender": "male",
@@ -29,9 +51,10 @@
   "address": [
     {
       "use": "home",
-      "state": "Oromia",
-      "district": "East Shewa",
+      "type": "physical",
       "city": "Adama Zuria",
+      "district": "East Shewa",
+      "state": "Oromia",
       "country": "ET"
     }
   ]
