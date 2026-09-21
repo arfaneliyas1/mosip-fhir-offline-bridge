@@ -1,47 +1,43 @@
-# 02 — Offline Auth Spec
+# 02. Cryptographic Trust & Offline e-KYC Verification Specification
 
-## Overview
+## 1. Overview & Trust Anchor Model
+In an online environment, verification relies on live API calls to a centralized server managed by the National ID authority (e.g., Fayda / MOSIP). In an offline-first architecture, trust must be decentralized mathematically via **Public Key Infrastructure (PKI)**.
 
-Offline authentication verifies a signed Fayda / MOSIP QR (or equivalent credential payload) on the edge device using a **pre-provisioned public key / trust store**, without calling the online IDA APIs at verification time.
+The root of trust originates from the **National Identity Authority Root Certificate Authority (CA)**, which issues cryptographically signed digital tokens to citizens. Edge verification nodes (such as rural clinic tablets) do not need internet access to talk to the server; instead, they operate using a locally cached, pre-loaded bundle of trusted public keys.
 
-## Actors
+---
 
-| Actor | Role |
-|-------|------|
-| Subject | Holds the credential (QR / digital ID) |
-| Edge verifier | Scans QR, verifies signature, maps to FHIR |
-| Trust store | Root / intermediate keys provisioned to the edge |
-| Sync worker | Uploads verification events when online |
+## 2. Public Key Infrastructure (PKI) Caching & Management
+To verify identity tokens offline without network calls, edge nodes must maintain an up-to-date local cryptographic keystore.
 
-## High-level flow
+* **Initial Key Provisioning:** When the clinic tablet is periodically brought to an urban hub or connected via a rare network window, it downloads the current public key certificate bundle (`fayda_root_ca.pem` and active intermediate signing keys) from the national authority.
+* **Certificate Validity & Rotation:** Keys include predefined validity periods. The edge application enforces strict expiration checks to prevent verification using outdated or compromised keys.
+* **Secure Local Keystore:** Public keys and signing certificates are stored securely within the encrypted local storage layer, protected against unauthorized extraction or tampering.
 
-1. Edge device is provisioned with trusted public keys and policy (validity windows, allowed claim sets).
-2. Subject presents QR / credential.
-3. Verifier parses payload per `schemas/fayda-qr-payload.json`.
-4. Verifier checks signature, expiry, and policy.
-5. On success, verifier creates / updates a local FHIR Patient (`schemas/fhir-patient.json`).
-6. Event is queued for sync (`docs/04-edge-sync-protocol.md`).
+---
 
-See also: `diagrams/offline-auth-sequence.mmd`.
+## 3. Structure of the Time-Signed Identity Token (QR Code)
+When a citizen presents their identity, the QR code encodes a digitally signed JSON payload (or JSON Web Token equivalent) containing essential demographic claims and cryptographic metadata.
 
-## Cryptographic checks (draft)
-
-- Algorithm and key ID from payload / header
-- Signature over canonical payload bytes
-- Not-before / expiry if present
-- Optional: device binding / nonce (future)
-
-## Failure modes
-
-| Condition | Result |
-|-----------|--------|
-| Unknown / untrusted key | Reject |
-| Bad signature | Reject |
-| Expired credential | Reject (or warn per policy) |
-| Schema mismatch | Reject |
-
-## Open questions
-
-- Exact Fayda QR encoding and signature format to target first
-- Key rotation / trust-store update while offline
-- Privacy: which claims are stored locally vs hashed
+### Example Payload Structure
+```json
+{
+  "iss": "FaydaVerse_National_ID_Authority",
+  "sub": "UIN-9876-5432-1098",
+  "iat": 1756000000,
+  "exp": 1756086400,
+  "identity_claims": {
+    "full_name_en": "Abebe Kebede",
+    "full_name_am": "አበበ ከበደ",
+    "gender": "M",
+    "birth_date": "1994-06-12",
+    "phone_number": "+251911234567",
+    "address": {
+      "region": "Oromia",
+      "zone": "East Shewa",
+      "woreda": "Adama Zuria"
+    }
+  },
+  "signature": "MEUCIQD3v8x...mock_ecdsa_signature_string...=="
+}
+```
