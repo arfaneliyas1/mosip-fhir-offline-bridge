@@ -1,0 +1,25 @@
+flowchart TB
+    subgraph Edge["Edge site (offline-capable)"]
+        QR[QR / credential capture]
+        Verifier[Offline verifier]
+        Trust[Trust store]
+        FHIRLocal[(Local FHIR store)]
+        Outbox[(Sync outbox)]
+        Worker[Sync worker]
+    end
+
+    subgraph Cloud["Online / facility cloud"]
+        SyncAPI[Sync API]
+        IDBridge[MOSIP / Fayda bridge]
+        FHIRCentral[(Central FHIR / registry)]
+    end
+
+    Subject([Subject]) --> QR
+    QR --> Verifier
+    Trust --> Verifier
+    Verifier --> FHIRLocal
+    Verifier --> Outbox
+    Outbox --> Worker
+    Worker -->|when online| SyncAPI
+    SyncAPI --> FHIRCentral
+    SyncAPI -.-> IDBridge
