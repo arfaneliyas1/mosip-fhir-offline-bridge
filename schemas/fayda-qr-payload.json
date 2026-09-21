@@ -1,0 +1,19 @@
+{
+  "iss": "FaydaVerse_National_ID_Authority",
+  "sub": "UIN-9876-5432-1098",
+  "iat": 1756000000,
+  "exp": 1756086400,
+  "identity_claims": {
+    "full_name_en": "Abebe Kebede",
+    "full_name_am": "አበበ ከበደ",
+    "gender": "M",
+    "birth_date": "1994-06-12",
+    "phone_number": "+251911234567",
+    "address": {
+      "region": "Oromia",
+      "zone": "East Shewa",
+      "woreda": "Adama Zuria"
+    }
+  },
+  "signature": "MEUCIQD3v8x...mock_ecdsa_signature_string...=="
+}
