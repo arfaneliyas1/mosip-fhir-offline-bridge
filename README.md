@@ -1,6 +1,6 @@
 # MOSIP-to-FHIR Offline Verification Bridge 🏥⚡
 
-> **An Open-Source Architectural Specification and Technical Blueprint for Last-Mile Digital Health Interoperability in Low-Connectivity Environments.**
+> Open-source architectural blueprint for offline identity verification and FHIR interoperability in low-connectivity health systems.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Architecture: Offline-First Edge](https://img.shields.io/badge/Architecture-Offline--First%20Edge-green.svg)]()
@@ -9,15 +9,15 @@
 
 ---
 
-## 1. Executive Summary & The Last-Mile Problem
+## Why this matters
 
-Digital Public Infrastructure (DPI) initiatives across East Africa—such as Ethiopia's **Fayda National ID** platform (built on MOSIP standards)—are establishing foundational layers for digital governance and public service delivery. Concurrently, national health ministries are accelerating electronic health record (EHR) deployments.
+In rural clinics and mobile health units, internet connectivity is often unavailable or unstable. When identity verification depends on a cloud API, care slows down or stops entirely. This project shows how to verify signed national-ID tokens locally, translate them into HL7 FHIR patient records, and synchronize securely later when connectivity returns.
 
-However, a critical architectural disconnect exists at the last mile: **Centralized, cloud-only verification models fail catastrophically in rural and peripheral healthcare settings.**
+## 1. Executive Summary
 
-In rural clinics, health posts, and mobile health units operating under chronic power grid instability and zero internet connectivity, centralized verification APIs break down. Clinicians are forced to choose between halting care or operating completely blind.
+The MOSIP-to-FHIR Offline Verification Bridge addresses the last-mile interoperability gap between identity infrastructure and healthcare delivery in low-connectivity environments. It provides an open-source architectural specification for offline cryptographic verification, local FHIR translation, and secure store-and-forward synchronization.
 
-**The MOSIP-to-FHIR Offline Verification Bridge** provides an open-source architectural specification that decouples trust from cloud connectivity—enabling offline cryptographic identity verification, automatic translation into international **HL7 FHIR health records**, and secure **Store-and-Forward synchronization** when network paths reopen.
+This approach helps national health systems preserve continuity of care without depending on permanent online connectivity for every patient verification event.
 
 ---
 
