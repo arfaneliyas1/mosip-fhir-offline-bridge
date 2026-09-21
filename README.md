@@ -38,7 +38,10 @@ graph TD
 
 ## 3. Core Technical Pillars
 
-The specification is broken down into four foundational pillars detailed inside the `docs/` directory:
+The specification is broken down into five foundational pillars detailed inside the `docs/` directory:
+
+- **Problem Statement & Rural Realities** (`docs/01-problem-statement.md`)
+  - Frames the last-mile infrastructure challenge and explains why cloud-only identity systems break in low-connectivity clinical settings.
 
 - **Zero-Data Cryptographic e-KYC** (`docs/02-offline-auth-spec.md`)
   - Utilizes asymmetric cryptography (ECDSA/RSA) and pre-loaded public key bundles to cryptographically verify time-signed national ID QR codes with 0 bytes of internet data.
@@ -49,39 +52,52 @@ The specification is broken down into four foundational pillars detailed inside 
 - **Store-and-Forward Edge Synchronization** (`docs/04-edge-sync-protocol.md`)
   - Implements AES-256 encrypted local SQLite/Realm storage with transactional outbound queues, background network monitors, and optimistic locking for conflict-free cloud synchronization.
 
-- **Security & Compliance Framework**
-  - Enforces data minimization, zero-biometric retention on edge nodes, local role-based access control (RBAC), and append-only audit logs.
+- **Threat Model & Security Boundaries** (`docs/05-threat-model.md`)
+  - Documents adversarial assumptions, attack surfaces, key rotation limits, offline revocation constraints, and the architecture's explicit operational boundaries.
 
-## 4. Repository Structure
+## 4. Documentation Map
+
+- [docs/01-problem-statement.md](docs/01-problem-statement.md) — problem framing and rural infrastructure constraints
+- [docs/02-offline-auth-spec.md](docs/02-offline-auth-spec.md) — PKI trust model and offline verification flow
+- [docs/03-fhir-mapping.md](docs/03-fhir-mapping.md) — MOSIP/Fayda claims mapped to HL7 FHIR Patient resources
+- [docs/04-edge-sync-protocol.md](docs/04-edge-sync-protocol.md) — store-and-forward sync and conflict handling
+- [docs/05-threat-model.md](docs/05-threat-model.md) — threat analysis, mitigations, and known limitations
+
+## 5. Repository Structure
 
 ```text
 mosip-fhir-offline-bridge/
 ├── README.md                      # Master Technical Whitepaper (You are here)
 ├── LICENSE                        # Open Source MIT License
+├── CONTRIBUTING.md                 # Contribution and collaboration guide
 ├── docs/                          # Detailed Technical Specifications
 │   ├── 01-problem-statement.md    # Rural infrastructure constraints & clinical impact
 │   ├── 02-offline-auth-spec.md    # Cryptographic trust model & public key caching
 │   ├── 03-fhir-mapping.md         # Semantic mapping dictionary (MOSIP to HL7 FHIR)
-│   └── 04-edge-sync-protocol.md   # Store-and-forward queueing & conflict resolution
+│   ├── 04-edge-sync-protocol.md   # Store-and-forward queueing & conflict resolution
+│   └── 05-threat-model.md         # Threat model, security boundaries, and limitations
 ├── schemas/                       # Reference Data Models & JSON Payloads
 │   ├── fayda-qr-payload.json      # Mock decrypted Fayda ID QR token structure
 │   └── fhir-patient.json          # Valid HL7 FHIR Patient resource representation
 ├── diagrams/                      # System Visualizations & Sequence Workflows
 │   └── offline-auth-sequence.mmd  # Mermaid sequence diagram for offline auth
-└── proof-of-concept/              # Conceptual Code Snippets
-    ├── verify_qr_signature.py     # Python script for offline public key verification
-    └── mock_sync_worker.js        # JavaScript background worker for sync queueing
+├── proof-of-concept/              # Conceptual Code Snippets
+│   ├── verify_qr_signature.py     # Python script for offline public key verification
+│   └── mock_sync_worker.js        # JavaScript background worker for sync queueing
+└── .github/                       # GitHub automation and metadata (if added later)
 ```
 
-## 5. Quick Inspection: Data Schemas & PoC
+## 6. Quick Inspection: Data Schemas & PoC
 
 - **Examine Data Mappings:** Review `schemas/fayda-qr-payload.json` to see a sample decrypted ID token, and `schemas/fhir-patient.json` to see its translated FHIR equivalent.
 - **Review Verification Logic:** Check `proof-of-concept/verify_qr_signature.py` for a lightweight Python implementation of offline public key signature validation.
 - **Review Sync Queueing:** Check `proof-of-concept/mock_sync_worker.js` for edge queue management and online connectivity listeners.
 
-## 6. Contributing & Community Feedback
+## 7. Contributing & Community Feedback
 
 This repository is maintained as an open architectural specification. We welcome peer reviews, architectural critiques, and contributions from digital public infrastructure (DPI) specialists, health informatics engineers, and public health practitioners.
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for the recommended contribution process and collaboration standards.
 
 1. Fork the repository.
 2. Create your feature branch (`git checkout -b feature/architectural-improvement`).
@@ -89,7 +105,7 @@ This repository is maintained as an open architectural specification. We welcome
 4. Push to the branch (`git push origin feature/architectural-improvement`).
 5. Open a Pull Request.
 
-## 7. License
+## 8. License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
