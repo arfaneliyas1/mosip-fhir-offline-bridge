@@ -1,0 +1,65 @@
+{
+  "resourceType": "RelatedPerson",
+  "id": "fayda-relatedperson-guardian-001",
+  "patient": {
+    "reference": "Patient/fayda-patient-001"
+  },
+  "relationship": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+          "code": "GUARD",
+          "display": "guardian"
+        }
+      ],
+      "text": "Guardian"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Kebede",
+      "given": [
+        "Tesfaye",
+        "Bekele"
+      ]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "+251912345678",
+      "use": "mobile"
+    }
+  ],
+  "gender": "male",
+  "address": [
+    {
+      "use": "home",
+      "type": "physical",
+      "line": [
+        "Kebele 04",
+        "House No. 123"
+      ],
+      "city": "Adama",
+      "district": "Adama Zuria",
+      "state": "Oromia",
+      "country": "ET"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://fhir.et/core/StructureDefinition/guardian-relationship-type",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "https://fhir.et/core/CodeSystem/guardian-relationship",
+            "code": "father",
+            "display": "Father"
+          }
+        ]
+      }
+    }
+  ]
+}

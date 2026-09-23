@@ -1,6 +1,8 @@
-# MOSIP-to-FHIR Offline Verification Bridge 🏥⚡
+# Fayda-to-FHIR Ethiopia Edge Integration Bridge 🇪🇹
 
-> Open-source architectural blueprint for offline identity verification and FHIR interoperability in low-connectivity health systems.
+> An offline-first edge engine bridging the National Fayda ID Ecosystem with Ethiopia's health interoperability architecture using low-connectivity integration patterns.
+
+> Note: As of August 4, 2026, Ethiopia's National ID Program (NIDP) was restructured into a state-owned enterprise named Faydaverse under Ethiopian Investment Holdings. This project uses both labels where relevant to avoid confusion.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Architecture: Offline-First Edge](https://img.shields.io/badge/Architecture-Offline--First%20Edge-green.svg)]()
@@ -12,6 +14,8 @@
 ## Why this matters
 
 In rural clinics and mobile health units, internet connectivity is often unavailable or unstable. When identity verification depends on a cloud API, care slows down or stops entirely. This project shows how to verify signed national-ID tokens locally, translate them into HL7 FHIR patient records, and synchronize securely later when connectivity returns.
+
+This is especially relevant in Ethiopia, where identity services and health integration need to remain resilient across low-connectivity environments and cross-institutional interoperability layers.
 
 ## 1. Executive Summary
 

@@ -41,7 +41,25 @@ Transparently documenting what this specification *does not* solve is critical f
 
 ---
 
-## 4. Specification Standards Alignment
+## 4. Consent, Data Minimization, and Legal Basis
+
+A core operational requirement of this architecture is that demographic data must not be rendered on a tablet or client device merely because the token was successfully verified. Before a local system presents any identifying or demographic information, it must complete a consent-driven token exchange loop and confirm the minimum necessary disclosure for the task at hand.
+
+### Consent-driven Token Exchange Loop
+1. A citizen or caregiver presents a verified Fayda token or equivalent local identity artifact.
+2. The edge client validates the signature, issuer, and time window.
+3. The local workflow identifies the specific purpose for which demographic information is needed.
+4. The user or authorized entity gives explicit consent for that purpose.
+5. Only the minimum set of demographic fields required for the workflow is rendered on-screen.
+6. If consent is absent, expired, or not relevant to the task, the client refuses to display the data and logs the access event for audit.
+
+This is especially important for dependent and pediatric flows, where demographic release must be narrow and purpose-bound. The architecture therefore treats consent not as a UX formality but as a legal and operational gate before any data is displayed from an AES-256/SQLCipher-protected local store.
+
+### Legal basis
+
+Proclamation No. 1284/2023 is a confirmed legal framework governing personal data handling and consent in the Ethiopian context. It contains the relevant data-minimization and consent principles that support a purpose-limited, consent-aware offline identity workflow. In practical deployment terms, the system should treat local display of demographic data as a consented access action, not as a default right inherited from valid token verification alone.
+
+## 5. Specification Standards Alignment
 This architecture directly bridges two established global standards:
 * **Identity Layer:** The repository's proof-of-concept intentionally implements a **JSON-based conceptual analogue** of the MOSIP Claim 169 model for public portfolio clarity and educational demonstration. Production-grade implementations should use the canonical **CBOR / COSE-based MOSIP Claim 169 / CWT wire format** as defined by the governing national identity specification, not a JSON re-serialization.
 * **Health Interoperability Layer:** Implements **HL7 FHIR Release 4 (R4)** for structured clinical data representation, ensuring seamless translation from national identity tokens into universal medical records.

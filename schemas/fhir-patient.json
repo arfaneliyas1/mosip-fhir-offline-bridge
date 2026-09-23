@@ -1,9 +1,9 @@
 {
   "resourceType": "Patient",
-  "id": "edge-patient-uuid-8b41-4c92",
+  "id": "fayda-patient-001",
   "meta": {
     "profile": [
-      "http://hl7.org/fhir/StructureDefinition/Patient"
+      "https://fhir.et/core/StructureDefinition/EtPatient"
     ],
     "tag": [
       {
@@ -23,9 +23,18 @@
             "code": "NI",
             "display": "National Identifier"
           }
-        ]
+        ],
+        "text": "Fayda National ID"
       },
-      "system": "urn:oid:1.3.6.1.4.1.59784.fayda.uin",
+      "system": "https://id.gov.et/identifier/fayda-fin",
+      "value": "FIN-ET-1987654321"
+    },
+    {
+      "use": "secondary",
+      "type": {
+        "text": "Fayda UIN"
+      },
+      "system": "https://id.gov.et/identifier/fayda-uin",
       "value": "UIN-9876-5432-1098"
     }
   ],
@@ -35,7 +44,9 @@
       "use": "official",
       "family": "Kebede",
       "given": [
-        "Abebe"
+        "Abebe",
+        "Bekele",
+        "Gemechu"
       ]
     }
   ],
@@ -52,10 +63,51 @@
     {
       "use": "home",
       "type": "physical",
-      "city": "Adama Zuria",
-      "district": "East Shewa",
+      "line": [
+        "Kebele 04",
+        "House No. 123"
+      ],
+      "city": "Adama",
+      "district": "Adama Zuria",
       "state": "Oromia",
-      "country": "ET"
+      "country": "ET",
+      "extension": [
+        {
+          "url": "https://fhir.et/core/StructureDefinition/address-hierarchy",
+          "extension": [
+            {
+              "url": "region",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "https://fhir.et/core/CodeSystem/region",
+                    "code": "OR",
+                    "display": "Oromia"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "zone",
+              "valueString": "East Shewa"
+            },
+            {
+              "url": "woreda",
+              "valueString": "Adama Zuria"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://fhir.et/core/StructureDefinition/fathers-name",
+      "valueString": "Bekele"
+    },
+    {
+      "url": "https://fhir.et/core/StructureDefinition/grandfather-name",
+      "valueString": "Gemechu"
     }
   ]
 }
